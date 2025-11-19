@@ -5,6 +5,9 @@ import {Link} from 'expo-router'
 
         const waterQuality = "Good";
         const isGood = waterQuality === "Good";
+        const beachName = "Name of beach";
+        const personalLocation = "Personal Location";
+        const qualityIndex = "index"
 
         return(
         <View style={styles.container}>
@@ -15,9 +18,9 @@ import {Link} from 'expo-router'
                 styles.card,
                 {backgroundColor: isGood ? "#4ade80" : '#ef4444'},
                 ]}>
-                <Text style={styles.beachName}>Name of beach</Text>
+                <Text style={styles.beachName}>{beachName}</Text>
                 <View style={styles.locationRow}>
-                    <Text style={styles.locationText}>Personal Location</Text>
+                    <Text style={styles.locationText}>{personalLocation}</Text>
                 </View>
 
                 <View style={[
@@ -27,7 +30,7 @@ import {Link} from 'expo-router'
                     },
                     ]}>
                     <Text style={styles.status}>{isGood ? "Good" : "Bad"}</Text>
-                    <Text style={styles.indexText}>Index</Text>
+                    <Text style={styles.indexText}>{qualityIndex}</Text>
                 </View>
 
                 <Text style={styles.description}>
@@ -121,10 +124,10 @@ const styles = StyleSheet.create({
         marginLeft: 4,
     },
     circle: {
-        width: 200,
-        height: 200,
-        borderRadius: 100,
-        borderWidth: 8,
+        width: 250,
+        height: 250,
+        borderRadius: 125,
+        borderWidth: 16,
         borderColor: "#86efac",
         backgroundColor: '#4ade80',
         alignItems: "center",
@@ -134,12 +137,12 @@ const styles = StyleSheet.create({
     status: {
         color: "white",
         fontWeight: "700",
-        fontSize: 26,
+        fontSize: 40,
     },
     indexText: {
         color: "white",
         opacity: 0.8,
-        fontSize: 13,
+        fontSize: 16,
     },
     description: {
         color: "white",
@@ -159,8 +162,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 50,
         paddingVertical: 12,
-        paddingHorizontal: 36,
-        width: 280,
+        paddingHorizontal: 32,
+        width: 240,
         shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 6,
