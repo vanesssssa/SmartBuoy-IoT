@@ -7,21 +7,21 @@ import { LinearGradient } from 'expo-linear-gradient'
 
 const Historie = () => {
 
-    const beachName = "Brigthon Beach";
-    const data = [{value: 5, label: "Mon"}, {value: 8, label: "Tue"}, {value: 9, label: "Wed"}, {value: 6, label: "Thu"}, {value: 5, label:"Fri"}, {value: 5, label: "Sat"}, {value: 5, label: "Sun"}]
+    //const beachName = "Brigthon Beach";
+    //const data = [{value: 5, label: "Mon"}, {value: 8, label: "Tue"}, {value: 9, label: "Wed"}, {value: 6, label: "Thu"}, {value: 5, label:"Fri"}, {value: 5, label: "Sat"}, {value: 5, label: "Sun"}]
 
     //DUMMY CODE
     const beaches = [
     {
         name: "Brighton Beach",
         data: [
-            { value: 5, label: "Mon" },
-            { value: 8, label: "Tue" },
-            { value: 9, label: "Wed" },
-            { value: 6, label: "Thu" },
-            { value: 5, label: "Fri" },
-            { value: 5, label: "Sat" },
-            { value: 5, label: "Sun" },
+            { value: 5, label: "Mon", },
+            { value: 8, label: "Tue", },
+            { value: 9, label: "Wed", },
+            { value: 6, label: "Thu", },
+            { value: 5, label: "Fri", },
+            { value: 5, label: "Sat", },
+            { value: 5, label: "Sun", },
         ],
     },
     {
@@ -83,8 +83,6 @@ const Historie = () => {
             </View>
 
             {/* Graph */}
-
-            
             <ScrollView 
                 style={{ width: "100%"}}
                 contentContainerStyle={{
@@ -93,8 +91,10 @@ const Historie = () => {
                 {beaches.map((beach, index) => (
                     <View key= {index} style={styles.chartContainer}>
                         <Text style={styles.subtitle}>{beach.name}</Text>
-                        <ScrollView contentInsetAdjustmentBehavior="automatic">
+                        <ScrollView contentInsetAdjustmentBehavior="automatic" style={{maxHeight: 350}}>
                             <BarChart 
+                                height = {260}
+                                width = {320}
                                 data = {beach.data}
                                 noOfSections={4}
                                 barBorderRadius={5}
