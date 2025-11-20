@@ -14,6 +14,43 @@ import {Link} from 'expo-router'
 
             <Text style={styles.title}>Smart Buoy App</Text>
             
+            {/*WaterQuality-Card Popup*/}
+            <View style={[
+                styles.popupCard,
+                {backgroundColor: isGood ? "#4ade80" : '#ef4444'},
+                ]}>
+
+                <Pressable style={styles.closeButton}> //add function
+                    <Text style={styles.closeButtonText}>x</Text>
+                </Pressable>
+
+                <Text style={styles.beachName}>{beachName}</Text>
+                <View style={styles.locationRow}>
+                    <Text style={styles.locationText}>{personalLocation}</Text>
+                </View>
+                <View style={styles.popupRow}>
+                    <View style={[
+                        styles.popupCircle,
+                        {backgroundColor: isGood ? '#4ade80' : '#ef4444',
+                            borderColor: isGood ? '#86efac' : '#fca5a5'
+                        },
+                        ]}>
+                        <Text style={styles.popupStatus}>{isGood ? "Good" : "Bad"}</Text>
+                        <Text style={styles.indexText}>{qualityIndex}</Text>
+                    </View>
+                    <View style={styles.popupTextBox}>
+                        <Text style={styles.description}>
+                            {isGood ? "The water quality is good\n" : "The water quality is bad\n"}
+                            <Text style={styles.bold}>
+                                {isGood ? "You are safe to swim" : "Avoid swimming"}
+                            </Text>
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+
+            {/*WaterQuality-Card*/}
             <View style={[
                 styles.card,
                 {backgroundColor: isGood ? "#4ade80" : '#ef4444'},
@@ -23,24 +60,27 @@ import {Link} from 'expo-router'
                     <Text style={styles.locationText}>{personalLocation}</Text>
                 </View>
 
-                <View style={[
-                    styles.circle,
-                    {backgroundColor: isGood ? '#4ade80' : '#ef4444',
-                        borderColor: isGood ? '#86efac' : '#fca5a5'
-                    },
-                    ]}>
-                    <Text style={styles.status}>{isGood ? "Good" : "Bad"}</Text>
-                    <Text style={styles.indexText}>{qualityIndex}</Text>
-                </View>
+                    <View style={[
+                        styles.circle,
+                        {backgroundColor: isGood ? '#4ade80' : '#ef4444',
+                            borderColor: isGood ? '#86efac' : '#fca5a5'
+                        },
+                        ]}>
+                        <Text style={styles.status}>{isGood ? "Good" : "Bad"}</Text>
+                        <Text style={styles.indexText}>{qualityIndex}</Text>
+                    </View>
 
-                <Text style={styles.description}>
-                    {isGood ? "The water quality is good\n" : "The water quality is bad\n"}
-                <Text style={styles.bold}>
-                    {isGood ? "You are safe to swim" : "Avoid swimming"}
-                </Text>
-                </Text>
+                    
+                        <Text style={styles.description}>
+                            {isGood ? "The water quality is good\n" : "The water quality is bad\n"}
+                        <Text style={styles.bold}>
+                            {isGood ? "You are safe to swim" : "Avoid swimming"}
+                        </Text>
+                        </Text>
+                    
             </View>
 
+            
         
             <View style={styles.bottomNav}>
                 <Link href="/app" style={[styles.navText]}>
@@ -153,8 +193,63 @@ const styles = StyleSheet.create({
         fontWeight: "700",
     },
 
+    //POPUP-CARD
+    popupCard:{
+        //backgroundColor: '#4ade80',
+        borderRadius: 24,
+        padding: 24,
+        alignItems: 'center',
+        width: 340,
+        height: 280,
+        shadowColor: "#000",
+        shadowOpacity: 0.15,
+        shadowRadius: 10,
+        elevation: 8,
+    },
+    popupRow:{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%"
+    },
+    popupTextBox:{
+        flex: 1,
+        marginLeft:20
+    },
+    popupCircle: {
+        width: 150,
+        height: 150,
+        borderRadius: 125,
+        borderWidth: 16,
+        borderColor: "#86efac",
+        backgroundColor: '#4ade80',
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 28,
+    },
+    popupStatus: {
+        color: "white",
+        fontWeight: "700",
+        fontSize: 24,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        zIndex: 10,
+        width: 32,
+        height: 32,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    closeButtonText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+
     //NAV
-     bottomNav: {
+    bottomNav: {
         position: "absolute",
         bottom: 24,
         flexDirection: "row",
@@ -162,26 +257,23 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         borderRadius: 50,
         paddingVertical: 12,
-        paddingHorizontal: 32,
-        width: 240,
+        paddingHorizontal: 36,
+        width: 280,
         shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 6,
     },
-    navItem: {
-        alignItems: "center",
-    },
     navButton: {
         alignItems: "center",
     },
-    icon:{
+    icon: {
         width: 20,
         height: 20,
         marginBottom: 4,
         tintColor: "#9ca3af",
     },
-    activeIcon:{
+    activeIcon: {
         width: 20,
         height: 20,
         marginBottom: 4,
@@ -195,11 +287,6 @@ const styles = StyleSheet.create({
         color: "#000",
         fontWeight: "600",
     },
-    link:{
-        marginVertical: 10,
-        borderBottomWidth: 1
-    },
-
 
     btn: {
         backgroundColor: '#ff0000',

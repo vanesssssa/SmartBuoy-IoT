@@ -2,11 +2,65 @@ import{ StyleSheet, Text, View, Image, ScrollView} from 'react-native'
 import {Link} from 'expo-router'
 import { TextInput } from 'react-native';
 import {BarChart, LineChart} from "react-native-gifted-charts"
+import React, { useState } from "react";
 import { LinearGradient } from 'expo-linear-gradient'
 
 const Historie = () => {
 
+    const beachName = "Brigthon Beach";
     const data = [{value: 5, label: "Mon"}, {value: 8, label: "Tue"}, {value: 9, label: "Wed"}, {value: 6, label: "Thu"}, {value: 5, label:"Fri"}, {value: 5, label: "Sat"}, {value: 5, label: "Sun"}]
+
+    //DUMMY CODE
+    const beaches = [
+    {
+        name: "Brighton Beach",
+        data: [
+            { value: 5, label: "Mon" },
+            { value: 8, label: "Tue" },
+            { value: 9, label: "Wed" },
+            { value: 6, label: "Thu" },
+            { value: 5, label: "Fri" },
+            { value: 5, label: "Sat" },
+            { value: 5, label: "Sun" },
+        ],
+    },
+    {
+        name: "Bournemouth Beach",
+        data: [
+            { value: 3, label: "Mon" },
+            { value: 7, label: "Tue" },
+            { value: 6, label: "Wed" },
+            { value: 4, label: "Thu" },
+            { value: 2, label: "Fri" },
+            { value: 3, label: "Sat" },
+            { value: 4, label: "Sun" },
+        ],
+    },
+    {
+        name: "Whitby Beach",
+        data: [
+            { value: 6, label: "Mon" },
+            { value: 8, label: "Tue" },
+            { value: 7, label: "Wed" },
+            { value: 5, label: "Thu" },
+            { value: 4, label: "Fri" },
+            { value: 6, label: "Sat" },
+            { value: 7, label: "Sun" },
+        ],
+    },
+    {
+        name: "St Ives Bay",
+        data: [
+            { value: 4, label: "Mon" },
+            { value: 5, label: "Tue" },
+            { value: 3, label: "Wed" },
+            { value: 6, label: "Thu" },
+            { value: 7, label: "Fri" },
+            { value: 6, label: "Sat" },
+            { value: 5, label: "Sun" },
+        ],
+    },
+];
 
     return(
         <View style={styles.container}>
@@ -30,28 +84,37 @@ const Historie = () => {
 
             {/* Graph */}
 
-            <View style={styles.chartContainer}>
-                <Text style={styles.subtitle}>Brighton Beach</Text>
-                <ScrollView contentInsetAdjustmentBehavior="automatic">
-                    <BarChart 
-                        data = {data}
-                        noOfSections={4}
-                        barBorderRadius={5}
-                        yAxisThickness={0}
-                        xAxisThickness={0}
-                        xAxisLabelTextStyle={{
-                            color: "#9ca3af",
-                            fontSize: 12,
-                            fontWeight: "500"
-                        }}
-                        yAxisTextStyle={{
-                            color: "#9ca3af",
-                            fontSize: 12,
-                            fontWeight: "500"
-                        }}
-                    />
-                </ScrollView>
-            </View>
+            
+            <ScrollView 
+                style={{ width: "100%"}}
+                contentContainerStyle={{
+                    alignItems: "center",
+                }}>
+                {beaches.map((beach, index) => (
+                    <View key= {index} style={styles.chartContainer}>
+                        <Text style={styles.subtitle}>{beach.name}</Text>
+                        <ScrollView contentInsetAdjustmentBehavior="automatic">
+                            <BarChart 
+                                data = {beach.data}
+                                noOfSections={4}
+                                barBorderRadius={5}
+                                yAxisThickness={0}
+                                xAxisThickness={0}
+                                xAxisLabelTextStyle={{
+                                    color: "#9ca3af",
+                                    fontSize: 12,
+                                    fontWeight: "500"
+                                }}
+                                yAxisTextStyle={{
+                                    color: "#9ca3af",
+                                    fontSize: 12,
+                                    fontWeight: "500"
+                                }}
+                            />
+                        </ScrollView>
+                    </View>
+            ))}
+            </ScrollView>
 
             
 
@@ -99,14 +162,15 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start'
     },
     title:{
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 18,
+        marginTop: 40
     },
     subtitle: {
-        fintSize: 14,
+        fontSize: 14,
         fontWeight: 'regular',
         textAlign: 'left',
         marginBottom: 24,
@@ -151,7 +215,7 @@ const styles = StyleSheet.create({
     },
 
     //NAV
-     bottomNav: {
+    bottomNav: {
         position: "absolute",
         bottom: 24,
         flexDirection: "row",
@@ -160,25 +224,22 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         paddingVertical: 12,
         paddingHorizontal: 36,
-        width: 240,
+        width: 280,
         shadowColor: "#000",
         shadowOpacity: 0.1,
         shadowRadius: 6,
         elevation: 6,
     },
-    navItem: {
-        alignItems: "center",
-    },
     navButton: {
         alignItems: "center",
     },
-    icon:{
+    icon: {
         width: 20,
         height: 20,
         marginBottom: 4,
         tintColor: "#9ca3af",
     },
-    activeIcon:{
+    activeIcon: {
         width: 20,
         height: 20,
         marginBottom: 4,
@@ -192,10 +253,6 @@ const styles = StyleSheet.create({
         color: "#000",
         fontWeight: "600",
     },
-    link:{
-        marginVertical: 10,
-        borderBottomWidth: 1
-    },
 
 
     //CHART
@@ -203,8 +260,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         borderRadius: 24,
         padding: 20,
+        marginBottom: 40,
         alignItems: 'center',
-        width: 340,
+        width: 360,
         shadowColor: "#000",
         shadowOpacity: 0.15,
         shadowRadius: 10,
