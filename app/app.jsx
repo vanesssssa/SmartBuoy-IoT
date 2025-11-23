@@ -14,7 +14,8 @@ import {Link} from 'expo-router'
 
             <Text style={styles.title}>Smart Buoy App</Text>
             
-            {/*WaterQuality-Card Popup*/}
+           {/* 
+            *WaterQuality-Card Popup*
             <View style={[
                 styles.popupCard,
                 {backgroundColor: isGood ? "#4ade80" : '#ef4444'},
@@ -48,6 +49,7 @@ import {Link} from 'expo-router'
                     </View>
                 </View>
             </View>
+            */}
 
 
             {/*WaterQuality-Card*/}
