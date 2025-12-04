@@ -13,7 +13,14 @@ const MOCK_BEACHES = [
         longitude: -0.1372,
         description: "Famous pebble beach with pier and vibrant seafront",
         rating: 4.5,
-        facilities: ["Parking", "Toilets", "Cafes"]
+        facilities: ["Parking", "Toilets", "Cafes"],
+        waterQuality: {
+            classification: "Good",
+            status: "safe", // safe, caution, unsafe
+            enterococci: 85, // per 100ml
+            lastTested: "2024-11-28",
+            waterType: "coastal"
+        }
     },
     {
         id: 2,
@@ -22,7 +29,14 @@ const MOCK_BEACHES = [
         longitude: -1.8797,
         description: "Seven miles of golden sand",
         rating: 4.7,
-        facilities: ["Parking", "Toilets", "Lifeguard"]
+        facilities: ["Parking", "Toilets", "Lifeguard"],
+        waterQuality: {
+            classification: "Excellent",
+            status: "safe",
+            enterococci: 18,
+            lastTested: "2024-11-29",
+            waterType: "coastal"
+        }
     },
     {
         id: 3,
@@ -31,7 +45,14 @@ const MOCK_BEACHES = [
         longitude: -0.6206,
         description: "Sandy beach with historic abbey backdrop",
         rating: 4.3,
-        facilities: ["Parking", "Toilets"]
+        facilities: ["Parking", "Toilets"],
+        waterQuality: {
+            classification: "Sufficient",
+            status: "caution",
+            enterococci: 165,
+            lastTested: "2024-11-27",
+            waterType: "coastal"
+        }
     },
     {
         id: 4,
@@ -40,7 +61,14 @@ const MOCK_BEACHES = [
         longitude: -5.4777,
         description: "Stunning Cornish beach with turquoise waters",
         rating: 4.8,
-        facilities: ["Parking", "Toilets", "Cafes", "Lifeguard"]
+        facilities: ["Parking", "Toilets", "Cafes", "Lifeguard"],
+        waterQuality: {
+            classification: "Excellent",
+            status: "safe",
+            enterococci: 12,
+            lastTested: "2024-11-30",
+            waterType: "coastal"
+        }
     },
     {
         id: 5,
@@ -49,9 +77,36 @@ const MOCK_BEACHES = [
         longitude: -1.7090,
         description: "Beautiful Northumberland beach with castle views",
         rating: 4.9,
-        facilities: ["Parking", "Toilets"]
+        facilities: ["Parking", "Toilets"],
+        waterQuality: {
+            classification: "Poor",
+            status: "unsafe",
+            enterococci: 245,
+            lastTested: "2024-11-26",
+            waterType: "coastal"
+        }
     }
 ];
+
+// Helper function to get status color
+const getStatusColor = (status) => {
+    switch (status) {
+        case 'safe': return '#10b981'; // green
+        case 'caution': return '#10b981'; // amber
+        case 'unsafe': return '#ef4444'; // red
+        default: return '#6b7280'; // gray
+    }
+};
+
+// Helper function to get status emoji
+const getStatusEmoji = (status) => {
+    switch (status) {
+        case 'safe': return '✓';
+        case 'caution': return '⚠️';
+        case 'unsafe': return '✗';
+        default: return '?';
+    }
+};
 
 const Contact = () => {
     const [searchText, setSearchText] = useState('');
@@ -125,6 +180,7 @@ const Contact = () => {
                             longitude: beach.longitude,
                         }}
                         title={beach.name}
+                        pinColor={getStatusColor(beach.waterQuality.status)}
                         onPress={() => handleBeachPress(beach)}
                     />
                 ))}
@@ -145,6 +201,32 @@ const Contact = () => {
                                 <Text style={styles.beachRating}>⭐ {selectedBeach.rating}/5</Text>
                                 <Text style={styles.beachDescription}>{selectedBeach.description}</Text>
                                 
+                                {/* Water Quality Section */}
+                                <View style={styles.waterQualitySection}>
+                                    <Text style={styles.sectionTitle}>Water Quality</Text>
+                                    <View style={[
+                                        styles.statusBadge, 
+                                        { backgroundColor: getStatusColor(selectedBeach.waterQuality.status) + '20' }
+                                    ]}>
+                                        <Text style={[
+                                            styles.statusText,
+                                            { color: getStatusColor(selectedBeach.waterQuality.status) }
+                                        ]}>
+                                            {getStatusEmoji(selectedBeach.waterQuality.status)} {selectedBeach.waterQuality.status.toUpperCase()}
+                                        </Text>
+                                    </View>
+                                    <Text style={styles.waterQualityDetail}>
+                                        Classification: {selectedBeach.waterQuality.classification}
+                                    </Text>
+                                    <Text style={styles.waterQualityDetail}>
+                                        Enterococci: {selectedBeach.waterQuality.enterococci} per 100ml
+                                    </Text>
+                                    <Text style={styles.waterQualityDetail}>
+                                        Last Tested: {selectedBeach.waterQuality.lastTested}
+                                    </Text>
+                                </View>
+
+                                {/* Facilities Section */}
                                 <Text style={styles.facilitiesTitle}>Facilities:</Text>
                                 <View style={styles.facilitiesContainer}>
                                     {selectedBeach.facilities.map((facility, index) => (
@@ -261,7 +343,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         padding: 24,
-        minHeight: 300,
+        minHeight: 400,
     },
     beachName: {
         fontSize: 24,
@@ -279,6 +361,37 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 16,
     },
+
+    // WATER QUALITY STYLES
+    waterQualitySection: {
+        backgroundColor: '#f9fafb',
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 16,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 12,
+    },
+    statusBadge: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        alignSelf: 'flex-start',
+        marginBottom: 12,
+    },
+    statusText: {
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    waterQualityDetail: {
+        fontSize: 14,
+        color: '#4b5563',
+        marginBottom: 6,
+    },
+
+    // FACILITIES STYLES
     facilitiesTitle: {
         fontSize: 18,
         fontWeight: '600',
