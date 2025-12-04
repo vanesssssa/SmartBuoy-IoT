@@ -3,7 +3,6 @@ import {Link} from 'expo-router'
 import { TextInput } from 'react-native';
 import {BarChart, LineChart} from "react-native-gifted-charts"
 import React, { useState } from "react";
-import { LinearGradient } from 'expo-linear-gradient'
 
 const Historie = () => {
 
@@ -110,7 +109,7 @@ const Historie = () => {
         name: "Bournemouth Beach",
         weeks: [ 
             {
-                weekLabel: "Week 1",
+                weekLabel: "01.12.-07.12.2025",
                 data: [
                     { value: 4, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 6, frontColor: "#6ba7e7ff" },
@@ -129,7 +128,7 @@ const Historie = () => {
                 ]
             },
             {
-                weekLabel: "Week 2",
+                weekLabel: "24.11.-30.11.2025",
                 data: [
                     { value: 5, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 5, frontColor: "#6ba7e7ff" },
@@ -148,7 +147,7 @@ const Historie = () => {
                 ]
             },
             {
-                weekLabel: "Week 3",
+                weekLabel: "17.11-23.11.2025",
                 data: [
                     { value: 3, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 7, frontColor: "#6ba7e7ff" },
@@ -167,7 +166,7 @@ const Historie = () => {
                 ]
             },
             {
-                weekLabel: "Week 4",
+                weekLabel: "10.11.-16.11.2025",
                 data: [
                     { value: 3, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 7, frontColor: "#6ba7e7ff" },
