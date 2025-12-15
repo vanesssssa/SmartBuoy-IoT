@@ -7,6 +7,8 @@ import MapView, { Marker } from 'react-native-maps';
 // Your backend API URL - change this to your deployed server later
 const API_URL = 'http://localhost:3000';
 
+const router = useRouter();
+
 // Get all beaches from database
 app.get('/api/beaches', async (req, res) => {
     try {
@@ -134,6 +136,26 @@ app.get('/api/beaches', async (req, res) => {
                                         Last Tested: {selectedBeach.waterQuality?.lastTested || 'N/A'}
                                     </Text>
                                 </View>
+
+                                {/*Button to add beach to mainscreen*/}
+                                <Text style={styles.ButtonAddBeachDescription}>
+                                    Save this beach to access it from your homescreen
+                                </Text>
+                                <Pressable
+                                    style={styles.ButtonAddBeachPressable}
+                                    onPress={() => {
+                                        router.push({
+                                            pathname: '/app',
+                                            params: {
+                                                beachName: selectedBeach.name,
+                                                beachId: selectedBeach.id,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <Text style={styles.ButtonAddBeachText}>Add to homescreen</Text>
+                                </Pressable>
+
 
                                 {/* Facilities Section */}
                                 <Text style={styles.facilitiesTitle}>Facilities:</Text>
@@ -336,6 +358,25 @@ const styles = StyleSheet.create({
     facilityText: {
         color: '#0369a1',
         fontSize: 14,
+    },
+    ButtonAddBeachPressable:{
+        backgroundColor: '#10b981',
+        padding: 14,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    ButtonAddBeachText:{
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    ButtonAddBeachDescription:{
+        fontSize: 13,
+        color: '#6b7280',
+        textAlign:'center',
+        marginBottom: 16,
+        lineHeight: 18,
     },
     closeButton: {
         backgroundColor: '#3b82f6',

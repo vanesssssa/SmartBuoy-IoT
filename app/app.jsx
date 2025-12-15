@@ -1,13 +1,16 @@
 import{ StyleSheet, Text, View, Image, Pressable} from 'react-native'
-import {Link} from 'expo-router'
+import {Link, useLocalSearchParams} from 'expo-router'
     
     const Home = () =>{
 
         const waterQuality = "Good";
         const isGood = waterQuality === "Good";
-        const beachName = "Name of beach";
+        //const beachName = "Name of beach";
         const personalLocation = "Personal Location";
-        const qualityIndex = "index"
+        const qualityIndex = "index";
+
+        //getting beach information from map screen
+        const {beachName, beachId} = useLocalSearchParams();
 
         return(
         <View style={styles.container}>
