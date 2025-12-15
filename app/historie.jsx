@@ -28,7 +28,7 @@ const Historie = () => {
         name: "Brighton Beach",
         weeks: [
             {
-                weekLabel: "Week 1",
+                weekLabel: "01.12.-07.12.2025",
                 data: [
                     { value: 2, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 4, frontColor: "#6ba7e7ff" },
@@ -47,7 +47,7 @@ const Historie = () => {
                 ]
             },
             {
-                weekLabel: "Week 2",
+                weekLabel: "24.11.-30.11.2025",
                 data: [
                     { value: 5, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 3, frontColor: "#6ba7e7ff" },
@@ -66,7 +66,7 @@ const Historie = () => {
                 ]
             },
             {
-                weekLabel: "Week 3",
+                weekLabel: "17.11-23.11.2025",
                 data: [
                     { value: 3, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 6, frontColor: "#6ba7e7ff" },
@@ -85,7 +85,7 @@ const Historie = () => {
                 ]
             },
             {
-                weekLabel: "Week 4",
+                weekLabel: "10.11.-16.11.2025",
                 data: [
                     { value: 6, label: "Mon", frontColor: "#47679eff", spacing: 2 },
                     { value: 4, frontColor: "#6ba7e7ff" },
@@ -304,27 +304,27 @@ const Historie = () => {
             {/* NAVIGATION */}
 
             <View style={styles.bottomNav}>
-                <Link href="/app" style={[styles.navText]}>
+                <Link href="/app" style={styles.navLink}>
                     <View style={styles.navButton}>
                         <Image
                             source={require("../assets/icons/home.png")}
                             style={styles.icon}
                         />
-                        <Text style={[styles.navText]}>Home</Text>
+                        <Text style={styles.navText}>Home</Text>
                     </View>
                 </Link>
         
-                <Link href="/map" style={[styles.navText]}>
+                <Link href="/map" style={styles.navLink}>
                     <View style={styles.navButton}>
                         <Image
                             source={require("../assets/icons/map.png")}
                             style={styles.icon}
                         />
-                        <Text style={[styles.navText]}>Map</Text>
+                        <Text style={styles.navText}>Map</Text>
                     </View>
                 </Link>
         
-                <Link href="/historie" style={[styles.navText]}>
+                <Link href="/historie" style={styles.navLink}>
                     <View style={styles.navButton}>
                         <Image
                             source={require("../assets/icons/time.png")}
@@ -339,13 +339,14 @@ const Historie = () => {
 }
 
 export default Historie
+
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'flex-start'
     },
-    title:{
+    title: {
         fontWeight: 'bold',
         fontSize: 18,
         marginTop: 40
@@ -356,15 +357,23 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginBottom: 24,
     },
-    card:{
+    card: {
         backgroundColor: '#eee',
         padding: 20,
         borderRadius: 5,
-        boxShadow: '4px 4px rgba(0,0,0,0.1)'
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
     },
-    link:{
+    link: {
         marginVertical: 10,
-        borderBottomWidth: 1
+        padding: 8,
+    },
+    linkText: {
+        fontSize: 16,
+        color: '#3b82f6',
+        textDecorationLine: 'underline',
     },
 
     // SEARCH BAR STYLES
