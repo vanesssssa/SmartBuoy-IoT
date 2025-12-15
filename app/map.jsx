@@ -7,6 +7,41 @@ import MapView, { Marker } from 'react-native-maps';
 // Your backend API URL - change this to your deployed server later
 const API_URL = 'http://10.192.123.68:3000';
 
+const router = useRouter();
+
+// Get all beaches from database
+app.get('/api/beaches', async (req, res) => {
+    try {
+      const { rows } = await pool.query(`
+        SELECT 
+          eubwid,
+          name,
+          latitude,
+          longitude,
+          country,
+          region,
+          county,
+          district
+        FROM bw_bathing_water
+        ORDER BY name
+      `);
+  
+      // Format the data to match your app's expected structure
+      const beaches = rows.map(row => ({
+        id: row.eubwid,
+        name: row.name,
+        latitude: parseFloat(row.latitude),
+        longitude: parseFloat(row.longitude),
+        description: [row.district, row.county, row.region].filter(Boolean).join(', '),
+        rating: 4.0,
+        facilities: ["Parking", "Toilets"],
+        waterQuality: {
+          classification: null,
+          status: "safe",
+          enterococci: null,
+          ecoli: null,
+          lastTested: null,
+          waterType: "coastal"
 // Helper function to get status color
 const getStatusColor = (status) => {
     switch (status) {
@@ -193,6 +228,26 @@ const Contact = () => {
                                         Last Tested: {selectedBeach.waterQuality?.lastTested || 'N/A'}
                                     </Text>
                                 </View>
+
+                                {/*Button to add beach to mainscreen*/}
+                                <Text style={styles.ButtonAddBeachDescription}>
+                                    Save this beach to access it from your homescreen
+                                </Text>
+                                <Pressable
+                                    style={styles.ButtonAddBeachPressable}
+                                    onPress={() => {
+                                        router.push({
+                                            pathname: '/app',
+                                            params: {
+                                                beachName: selectedBeach.name,
+                                                beachId: selectedBeach.id,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <Text style={styles.ButtonAddBeachText}>Add to homescreen</Text>
+                                </Pressable>
+
 
                                 {/* Facilities Section */}
                                 <Text style={styles.facilitiesTitle}>Facilities:</Text>
@@ -395,6 +450,25 @@ const styles = StyleSheet.create({
     facilityText: {
         color: '#0369a1',
         fontSize: 14,
+    },
+    ButtonAddBeachPressable:{
+        backgroundColor: '#10b981',
+        padding: 14,
+        borderRadius: 12,
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    ButtonAddBeachText:{
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+    ButtonAddBeachDescription:{
+        fontSize: 13,
+        color: '#6b7280',
+        textAlign:'center',
+        marginBottom: 16,
+        lineHeight: 18,
     },
     closeButton: {
         backgroundColor: '#3b82f6',
