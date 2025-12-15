@@ -3,45 +3,14 @@ import { Link } from 'expo-router'
 import { TextInput } from 'react-native';
 import { useState, useRef, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
+import { useRouter } from 'expo-router';
+import { API_URL } from '../constants/api';
 
-// Your backend API URL - change this to your deployed server later
-const API_URL = 'http://10.192.123.68:3000';
 
-const router = useRouter();
 
-// Get all beaches from database
-app.get('/api/beaches', async (req, res) => {
-    try {
-      const { rows } = await pool.query(`
-        SELECT 
-          eubwid,
-          name,
-          latitude,
-          longitude,
-          country,
-          region,
-          county,
-          district
-        FROM bw_bathing_water
-        ORDER BY name
-      `);
+
   
-      // Format the data to match your app's expected structure
-      const beaches = rows.map(row => ({
-        id: row.eubwid,
-        name: row.name,
-        latitude: parseFloat(row.latitude),
-        longitude: parseFloat(row.longitude),
-        description: [row.district, row.county, row.region].filter(Boolean).join(', '),
-        rating: 4.0,
-        facilities: ["Parking", "Toilets"],
-        waterQuality: {
-          classification: null,
-          status: "safe",
-          enterococci: null,
-          ecoli: null,
-          lastTested: null,
-          waterType: "coastal"
+    
 // Helper function to get status color
 const getStatusColor = (status) => {
     switch (status) {
@@ -69,6 +38,7 @@ const Contact = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const mapRef = useRef(null);
+    const router = useRouter();
 
     // Fetch beaches from API when component mounts
     useEffect(() => {
@@ -307,7 +277,7 @@ const Contact = () => {
     )
 }
 
-export default Contact
+export default Contact;
 
 const styles = StyleSheet.create({
     container: {

@@ -3,6 +3,8 @@ import { Link } from 'expo-router'
 import { TextInput } from 'react-native';
 import { BarChart } from "react-native-gifted-charts"
 import React, { useState, useEffect } from "react";
+import { API_URL } from '../constants/api';
+
 
 const Historie = () => {
 
