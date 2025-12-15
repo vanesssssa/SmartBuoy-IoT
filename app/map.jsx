@@ -5,51 +5,110 @@ import { useState, useRef, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 
 // Your backend API URL - change this to your deployed server later
-const API_URL = 'http://localhost:3000';
+const API_URL = 'http://10.192.123.68:3000';
 
-// Get all beaches from database
-app.get('/api/beaches', async (req, res) => {
-    try {
-      const { rows } = await pool.query(`
-        SELECT 
-          eubwid,
-          name,
-          latitude,
-          longitude,
-          country,
-          region,
-          county,
-          district
-        FROM bw_bathing_water
-        ORDER BY name
-      `);
-  
-      // Format the data to match your app's expected structure
-      const beaches = rows.map(row => ({
-        id: row.eubwid,
-        name: row.name,
-        latitude: parseFloat(row.latitude),
-        longitude: parseFloat(row.longitude),
-        description: [row.district, row.county, row.region].filter(Boolean).join(', '),
-        rating: 4.0,
-        facilities: ["Parking", "Toilets"],
-        waterQuality: {
-          classification: null,
-          status: "safe",
-          enterococci: null,
-          ecoli: null,
-          lastTested: null,
-          waterType: "coastal"
-        }
-      }));
-  
-      res.json(beaches);
-    } catch (err) {
-      console.error('Error fetching beaches:', err);
-      res.status(500).json({ error: err.message });
+// Helper function to get status color
+const getStatusColor = (status) => {
+    switch (status) {
+        case 'safe': return '#10b981';
+        case 'caution': return '#f59e0b';
+        case 'unsafe': return '#ef4444';
+        default: return '#6b7280';
     }
-  });
-  {
+};
+
+// Helper function to get status emoji
+const getStatusEmoji = (status) => {
+    switch (status) {
+        case 'safe': return '✓';
+        case 'caution': return '⚠️';
+        case 'unsafe': return '✗';
+        default: return '?';
+    }
+};
+
+const Contact = () => {
+    const [searchText, setSearchText] = useState('');
+    const [selectedBeach, setSelectedBeach] = useState(null);
+    const [beaches, setBeaches] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const mapRef = useRef(null);
+
+    // Fetch beaches from API when component mounts
+    useEffect(() => {
+        fetchBeaches();
+    }, []);
+
+    const fetchBeaches = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await fetch(`${API_URL}/api/beaches`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch beaches');
+            }
+            
+            const data = await response.json();
+            setBeaches(data);
+        } catch (err) {
+            console.error('Error fetching beaches:', err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Filter beaches based on search
+    const filteredBeaches = beaches.filter(beach =>
+        beach.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    // Handle beach marker press
+    const handleBeachPress = (beach) => {
+        setSelectedBeach(beach);
+    };
+
+    // Handle search - move map to first result
+    const handleSearch = (text) => {
+        setSearchText(text);
+        if (text.length > 0) {
+            const firstMatch = beaches.find(beach =>
+                beach.name.toLowerCase().includes(text.toLowerCase())
+            );
+            if (firstMatch && mapRef.current) {
+                mapRef.current.animateToRegion({
+                    latitude: firstMatch.latitude,
+                    longitude: firstMatch.longitude,
+                    latitudeDelta: 0.5,
+                    longitudeDelta: 0.5,
+                }, 1000);
+            }
+        }
+    };
+
+    // Show loading spinner while fetching data
+    if (loading) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <ActivityIndicator size="large" color="#3b82f6" />
+                <Text style={styles.loadingText}>Loading beaches...</Text>
+            </View>
+        );
+    }
+
+    // Show error message if fetch failed
+    if (error) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <Text style={styles.errorText}>Error: {error}</Text>
+                <Pressable style={styles.retryButton} onPress={fetchBeaches}>
+                    <Text style={styles.retryButtonText}>Retry</Text>
+                </Pressable>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>

@@ -1,20 +1,48 @@
-import{ StyleSheet, Text, View, Image, ScrollView, Pressable} from 'react-native'
-import {Link} from 'expo-router'
+import { StyleSheet, Text, View, Image, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { Link } from 'expo-router'
 import { TextInput } from 'react-native';
-import {BarChart, LineChart} from "react-native-gifted-charts"
-import React, { useState } from "react";
+import { BarChart } from "react-native-gifted-charts"
+import React, { useState, useEffect } from "react";
 
 const Historie = () => {
 
     const [searchText, setSearchText] = useState("");
     const [selectedWeek, setSelectedWeek] = useState({});
+    const [beaches, setBeaches] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    //GET NEEDED WEEK
+    // Fetch data when component mounts
+    useEffect(() => {
+        fetchHistory();
+    }, []);
+
+    const fetchHistory = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await fetch(`${API_URL}/api/beaches/history`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch history');
+            }
+            
+            const data = await response.json();
+            setBeaches(data);
+        } catch (err) {
+            console.error('Error fetching history:', err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // GET NEEDED WEEK
     const getSelectedWeek = (beachName) => {
         return selectedWeek[beachName] || 0;
     };
 
-    //SET WEEK FOR BEACH
+    // SET WEEK FOR BEACH
     const setWeekForBeach = (beachName, weekIndex) => {
         setSelectedWeek(prev => ({
             ...prev,
@@ -22,178 +50,33 @@ const Historie = () => {
         }));
     };
 
-    //DUMMY CODE
-    const beaches = [
-    {
-        name: "Brighton Beach",
-        weeks: [
-            {
-                weekLabel: "01.12.-07.12.2025",
-                data: [
-                    { value: 2, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 7, frontColor: "#6ba7e7ff" },
-                    { value: 4, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 8, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                    { value: 3, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 7, frontColor: "#6ba7e7ff" },
-                    { value: 9, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 1, frontColor: "#6ba7e7ff" },
-                ]
-            },
-            {
-                weekLabel: "24.11.-30.11.2025",
-                data: [
-                    { value: 5, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 4, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 6, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                ]
-            },
-            {
-                weekLabel: "17.11-23.11.2025",
-                data: [
-                    { value: 3, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 6, frontColor: "#6ba7e7ff" },
-                    { value: 4, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 7, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                ]
-            },
-            {
-                weekLabel: "10.11.-16.11.2025",
-                data: [
-                    { value: 6, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 9, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 1, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                ]
-            }
-        ]
-    },
-    {
-        name: "Bournemouth Beach",
-        weeks: [ 
-            {
-                weekLabel: "01.12.-07.12.2025",
-                data: [
-                    { value: 4, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 6, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                    { value: 3, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 7, frontColor: "#6ba7e7ff" },
-                    { value: 9, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 1, frontColor: "#6ba7e7ff" },
-                ]
-            },
-            {
-                weekLabel: "24.11.-30.11.2025",
-                data: [
-                    { value: 5, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 4, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 6, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                ]
-            },
-            {
-                weekLabel: "17.11-23.11.2025",
-                data: [
-                    { value: 3, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 7, frontColor: "#6ba7e7ff" },
-                    { value: 4, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 6, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                ]
-            },
-            {
-                weekLabel: "10.11.-16.11.2025",
-                data: [
-                    { value: 3, label: "Mon", frontColor: "#47679eff", spacing: 2 },
-                    { value: 7, frontColor: "#6ba7e7ff" },
-                    { value: 4, label: "Tue", frontColor: "#47679eff", spacing: 2 },
-                    { value: 6, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Wed", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 6, label: "Thu", frontColor: "#47679eff", spacing: 2 },
-                    { value: 4, frontColor: "#6ba7e7ff" },
-                    { value: 7, label: "Fri", frontColor: "#47679eff", spacing: 2 },
-                    { value: 3, frontColor: "#6ba7e7ff" },
-                    { value: 5, label: "Sat", frontColor: "#47679eff", spacing: 2 },
-                    { value: 5, frontColor: "#6ba7e7ff" },
-                    { value: 8, label: "Sun", frontColor: "#47679eff", spacing: 2 },
-                    { value: 2, frontColor: "#6ba7e7ff" },
-                ]
-            }
-        ]
-    }   
-];
-
-
     const filteredBeaches = beaches.filter(
         beach => beach.name && beach.name.toLowerCase().includes(searchText.toLowerCase())
     );
 
-    return(
+    // Show loading spinner
+    if (loading) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <ActivityIndicator size="large" color="#3b82f6" />
+                <Text style={styles.loadingText}>Loading history...</Text>
+            </View>
+        );
+    }
+
+    // Show error message
+    if (error) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <Text style={styles.errorText}>Error: {error}</Text>
+                <Pressable style={styles.retryButton} onPress={fetchHistory}>
+                    <Text style={styles.retryButtonText}>Retry</Text>
+                </Pressable>
+            </View>
+        );
+    }
+
+    return (
         <View style={styles.container}>
             <Text style={styles.title}>Historical Water Quality</Text>
 
@@ -213,73 +96,79 @@ const Historie = () => {
             </View>
 
             {/* GRAPH */}
-            <ScrollView 
-                style={{ width: "100%"}}
+            <ScrollView
+                style={{ width: "100%" }}
                 contentContainerStyle={{
                     alignItems: "center",
+                    paddingBottom: 100,
                 }}>
-                
+
                 {/* SEARCH BEACHES */}
                 {filteredBeaches.length === 0 ? (
-                    <Text style = {{marginTop: 20, color: "#9ca3af", fontSize: 16}}>
+                    <Text style={{ marginTop: 20, color: "#9ca3af", fontSize: 16 }}>
                         No beaches found.
                     </Text>
-                ) :
-                    (filteredBeaches.map((beach, index) => (
-                        <View 
-                            style={styles.chartContainer}
-                            key = {`${beach.name}-week-${getSelectedWeek(beach.name)}`}>
-                            <Text style={styles.subtitle}>{beach.name}</Text>
+                ) : (
+                    filteredBeaches.map((beach, index) => {
+                        const currentWeekIndex = getSelectedWeek(beach.name);
+                        const currentWeek = beach.weeks[currentWeekIndex];
 
-                                 {/*LEGEND */}
+                        if (!currentWeek) return null;
+
+                        return (
+                            <View
+                                style={styles.chartContainer}
+                                key={`${beach.name}-week-${currentWeekIndex}`}>
+                                <Text style={styles.subtitle}>{beach.name}</Text>
+
+                                {/* LEGEND */}
                                 <View style={styles.legendContainer}>
                                     <View style={styles.legendItem}>
-                                        <View style={[styles.legendBox, {backgroundColor: "#47679eff"}]}></View>
+                                        <View style={[styles.legendBox, { backgroundColor: "#47679eff" }]}></View>
                                         <Text style={styles.legendText}>E. coli Bacteria</Text>
                                     </View>
                                     <View style={styles.legendItem}>
-                                        <View style={[styles.legendBox, {backgroundColor: "#6ba7e7ff"}]}></View>
+                                        <View style={[styles.legendBox, { backgroundColor: "#6ba7e7ff" }]}></View>
                                         <Text style={styles.legendText}>Intestinal Enterococci</Text>
                                     </View>
                                 </View>
 
-                                {/*CHANGE WEEKS*/}
+                                {/* CHANGE WEEKS */}
                                 <View style={styles.weekSelector}>
-                                        <Pressable
-                                           style={styles.arrowButton}
-                                            onPress={() => {
-                                                const currentWeek = getSelectedWeek(beach.name);
-                                                const newWeek = currentWeek > 0 ? currentWeek -1 : beach.weeks.length -1;
-                                                setWeekForBeach(beach.name, newWeek);
-                                            }}
-                                        >
-                                            <Text style={styles.arrowText}>{"<"}</Text>
-                                        </Pressable>
-                                        <Text style={styles.weekLabel}>
-                                            {beach.weeks[getSelectedWeek(beach.name)].weekLabel}
-                                        </Text>
-                                        <Pressable
-                                            style={styles.arrowButton}
-                                            onPress={()=> {
-                                                const currentWeek = getSelectedWeek(beach.name);
-                                                const newWeek = currentWeek < beach.weeks.length -1 ? currentWeek + 1 : 0;
-                                                setWeekForBeach(beach.name, newWeek);
-                                            }}
-                                        >
-                                            <Text style={styles.arrowText}>{">"}</Text>
-                                        </Pressable>
-                                    
+                                    <Pressable
+                                        style={styles.arrowButton}
+                                        onPress={() => {
+                                            const currentWeek = getSelectedWeek(beach.name);
+                                            const newWeek = currentWeek > 0 ? currentWeek - 1 : beach.weeks.length - 1;
+                                            setWeekForBeach(beach.name, newWeek);
+                                        }}
+                                    >
+                                        <Text style={styles.arrowText}>{"<"}</Text>
+                                    </Pressable>
+                                    <Text style={styles.weekLabel}>
+                                        {currentWeek.weekLabel}
+                                    </Text>
+                                    <Pressable
+                                        style={styles.arrowButton}
+                                        onPress={() => {
+                                            const currentWeek = getSelectedWeek(beach.name);
+                                            const newWeek = currentWeek < beach.weeks.length - 1 ? currentWeek + 1 : 0;
+                                            setWeekForBeach(beach.name, newWeek);
+                                        }}
+                                    >
+                                        <Text style={styles.arrowText}>{">"}</Text>
+                                    </Pressable>
                                 </View>
 
                                 {/* CHART */}
-                                <BarChart 
-                                    key={`${beach.name}-week-chart-${getSelectedWeek(beach.name)}`}
-                                    height = {260}
-                                    width = {320}
-                                    data = {beach.weeks[getSelectedWeek(beach.name)].data}
+                                <BarChart
+                                    key={`${beach.name}-week-chart-${currentWeekIndex}`}
+                                    height={260}
+                                    width={320}
+                                    data={currentWeek.data}
                                     isAnimated
-                                    barWidth = {22}
-                                    spacing = {30}
+                                    barWidth={22}
+                                    spacing={30}
                                     noOfSections={4}
                                     barBorderRadius={5}
                                     yAxisThickness={0}
@@ -295,14 +184,13 @@ const Historie = () => {
                                         fontWeight: "500"
                                     }}
                                 />
-                        </View>
-                ))
-            )}
+                            </View>
+                        );
+                    })
+                )}
             </ScrollView>
 
-
             {/* NAVIGATION */}
-
             <View style={styles.bottomNav}>
                 <Link href="/app" style={styles.navLink}>
                     <View style={styles.navButton}>
@@ -313,7 +201,7 @@ const Historie = () => {
                         <Text style={styles.navText}>Home</Text>
                     </View>
                 </Link>
-        
+
                 <Link href="/map" style={styles.navLink}>
                     <View style={styles.navButton}>
                         <Image
@@ -323,7 +211,7 @@ const Historie = () => {
                         <Text style={styles.navText}>Map</Text>
                     </View>
                 </Link>
-        
+
                 <Link href="/historie" style={styles.navLink}>
                     <View style={styles.navButton}>
                         <Image
@@ -346,6 +234,30 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'flex-start'
     },
+    centered: {
+        justifyContent: 'center',
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#666',
+    },
+    errorText: {
+        fontSize: 16,
+        color: '#ef4444',
+        marginBottom: 16,
+    },
+    retryButton: {
+        backgroundColor: '#3b82f6',
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 8,
+    },
+    retryButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
     title: {
         fontWeight: 'bold',
         fontSize: 18,
@@ -357,26 +269,6 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         marginBottom: 24,
     },
-    card: {
-        backgroundColor: '#eee',
-        padding: 20,
-        borderRadius: 5,
-        shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    link: {
-        marginVertical: 10,
-        padding: 8,
-    },
-    linkText: {
-        fontSize: 16,
-        color: '#3b82f6',
-        textDecorationLine: 'underline',
-    },
-
-    // SEARCH BAR STYLES
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -403,8 +295,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#000',
     },
-
-    //NAV
     bottomNav: {
         position: "absolute",
         bottom: 24,
@@ -443,9 +333,6 @@ const styles = StyleSheet.create({
         color: "#000",
         fontWeight: "600",
     },
-
-
-    //CHART
     chartContainer: {
         backgroundColor: "#ffffff",
         borderRadius: 24,
@@ -459,8 +346,6 @@ const styles = StyleSheet.create({
         elevation: 8,
         overflow: 'hidden',
     },
-
-    //LEGEND
     legendContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
@@ -482,8 +367,6 @@ const styles = StyleSheet.create({
         fontSize: 11,
         color: '#666'
     },
-
-    // WEEK SELECTOR
     weekSelector: {
         flexDirection: 'row',
         justifyContent: 'center',
