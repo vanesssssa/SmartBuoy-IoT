@@ -1,146 +1,55 @@
-import { StyleSheet, Text, View, Image, Modal, ScrollView, Pressable } from 'react-native'
+import { StyleSheet, Text, View, Image, Modal, ScrollView, Pressable, ActivityIndicator } from 'react-native'
 import { Link } from 'expo-router'
 import { TextInput } from 'react-native';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 
-// TEMPORARY: Mock beach data - Replace with cloud database later
-const MOCK_BEACHES = [
-    {
-        id: 1,
-        name: "Brighton Beach",
-        latitude: 50.8225,
-        longitude: -0.1372,
-        description: "Famous pebble beach with pier and vibrant seafront",
-        rating: 4.5,
-        facilities: ["Parking", "Toilets", "Cafes"],
-        waterQuality: {
-            classification: "Good",
-            status: "safe", // safe, caution, unsafe
-            enterococci: 85, // per 100ml
-            lastTested: "2024-11-28",
-            waterType: "coastal"
-        }
-    },
-    {
-        id: 2,
-        name: "Bournemouth Beach",
-        latitude: 50.7155,
-        longitude: -1.8797,
-        description: "Seven miles of golden sand",
-        rating: 4.7,
-        facilities: ["Parking", "Toilets", "Lifeguard"],
-        waterQuality: {
-            classification: "Excellent",
-            status: "safe",
-            enterococci: 18,
-            lastTested: "2024-11-29",
-            waterType: "coastal"
-        }
-    },
-    {
-        id: 3,
-        name: "Whitby Beach",
-        latitude: 54.4858,
-        longitude: -0.6206,
-        description: "Sandy beach with historic abbey backdrop",
-        rating: 4.3,
+// Your backend API URL - change this to your deployed server later
+const API_URL = 'http://localhost:3000';
+
+// Get all beaches from database
+app.get('/api/beaches', async (req, res) => {
+    try {
+      const { rows } = await pool.query(`
+        SELECT 
+          eubwid,
+          name,
+          latitude,
+          longitude,
+          country,
+          region,
+          county,
+          district
+        FROM bw_bathing_water
+        ORDER BY name
+      `);
+  
+      // Format the data to match your app's expected structure
+      const beaches = rows.map(row => ({
+        id: row.eubwid,
+        name: row.name,
+        latitude: parseFloat(row.latitude),
+        longitude: parseFloat(row.longitude),
+        description: [row.district, row.county, row.region].filter(Boolean).join(', '),
+        rating: 4.0,
         facilities: ["Parking", "Toilets"],
         waterQuality: {
-            classification: "Sufficient",
-            status: "caution",
-            enterococci: 165,
-            lastTested: "2024-11-27",
-            waterType: "coastal"
+          classification: null,
+          status: "safe",
+          enterococci: null,
+          ecoli: null,
+          lastTested: null,
+          waterType: "coastal"
         }
-    },
-    {
-        id: 4,
-        name: "St Ives Bay",
-        latitude: 50.2105,
-        longitude: -5.4777,
-        description: "Stunning Cornish beach with turquoise waters",
-        rating: 4.8,
-        facilities: ["Parking", "Toilets", "Cafes", "Lifeguard"],
-        waterQuality: {
-            classification: "Excellent",
-            status: "safe",
-            enterococci: 12,
-            lastTested: "2024-11-30",
-            waterType: "coastal"
-        }
-    },
-    {
-        id: 5,
-        name: "Bamburgh Beach",
-        latitude: 55.6090,
-        longitude: -1.7090,
-        description: "Beautiful Northumberland beach with castle views",
-        rating: 4.9,
-        facilities: ["Parking", "Toilets"],
-        waterQuality: {
-            classification: "Poor",
-            status: "unsafe",
-            enterococci: 245,
-            lastTested: "2024-11-26",
-            waterType: "coastal"
-        }
+      }));
+  
+      res.json(beaches);
+    } catch (err) {
+      console.error('Error fetching beaches:', err);
+      res.status(500).json({ error: err.message });
     }
-];
-
-// Helper function to get status color
-const getStatusColor = (status) => {
-    switch (status) {
-        case 'safe': return '#10b981'; // green
-        case 'caution': return '#10b981'; // amber
-        case 'unsafe': return '#ef4444'; // red
-        default: return '#6b7280'; // gray
-    }
-};
-
-// Helper function to get status emoji
-const getStatusEmoji = (status) => {
-    switch (status) {
-        case 'safe': return '✓';
-        case 'caution': return '⚠️';
-        case 'unsafe': return '✗';
-        default: return '?';
-    }
-};
-
-const Contact = () => {
-    const [searchText, setSearchText] = useState('');
-    const [selectedBeach, setSelectedBeach] = useState(null);
-    const [beaches, setBeaches] = useState(MOCK_BEACHES);
-    const mapRef = useRef(null);
-
-    // Filter beaches based on search
-    const filteredBeaches = beaches.filter(beach =>
-        beach.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    // Handle beach marker press
-    const handleBeachPress = (beach) => {
-        setSelectedBeach(beach);
-    };
-
-    // Handle search - move map to first result
-    const handleSearch = (text) => {
-        setSearchText(text);
-        if (text.length > 0) {
-            const firstMatch = beaches.find(beach =>
-                beach.name.toLowerCase().includes(text.toLowerCase())
-            );
-            if (firstMatch && mapRef.current) {
-                mapRef.current.animateToRegion({
-                    latitude: firstMatch.latitude,
-                    longitude: firstMatch.longitude,
-                    latitudeDelta: 0.5,
-                    longitudeDelta: 0.5,
-                }, 1000);
-            }
-        }
-    };
+  });
+  {
 
     return (
         <View style={styles.container}>
@@ -166,7 +75,7 @@ const Contact = () => {
                 ref={mapRef}
                 style={styles.map}
                 initialRegion={{
-                    latitude: 54.0, // Center of UK
+                    latitude: 54.0,
                     longitude: -2.0,
                     latitudeDelta: 8,
                     longitudeDelta: 8,
@@ -180,7 +89,7 @@ const Contact = () => {
                             longitude: beach.longitude,
                         }}
                         title={beach.name}
-                        pinColor={getStatusColor(beach.waterQuality.status)}
+                        pinColor={getStatusColor(beach.waterQuality?.status)}
                         onPress={() => handleBeachPress(beach)}
                     />
                 ))}
@@ -206,30 +115,30 @@ const Contact = () => {
                                     <Text style={styles.sectionTitle}>Water Quality</Text>
                                     <View style={[
                                         styles.statusBadge, 
-                                        { backgroundColor: getStatusColor(selectedBeach.waterQuality.status) + '20' }
+                                        { backgroundColor: getStatusColor(selectedBeach.waterQuality?.status) + '20' }
                                     ]}>
                                         <Text style={[
                                             styles.statusText,
-                                            { color: getStatusColor(selectedBeach.waterQuality.status) }
+                                            { color: getStatusColor(selectedBeach.waterQuality?.status) }
                                         ]}>
-                                            {getStatusEmoji(selectedBeach.waterQuality.status)} {selectedBeach.waterQuality.status.toUpperCase()}
+                                            {getStatusEmoji(selectedBeach.waterQuality?.status)} {selectedBeach.waterQuality?.status?.toUpperCase() || 'UNKNOWN'}
                                         </Text>
                                     </View>
                                     <Text style={styles.waterQualityDetail}>
-                                        Classification: {selectedBeach.waterQuality.classification}
+                                        Classification: {selectedBeach.waterQuality?.classification || 'N/A'}
                                     </Text>
                                     <Text style={styles.waterQualityDetail}>
-                                        Enterococci: {selectedBeach.waterQuality.enterococci} per 100ml
+                                        Enterococci: {selectedBeach.waterQuality?.enterococci || 'N/A'} per 100ml
                                     </Text>
                                     <Text style={styles.waterQualityDetail}>
-                                        Last Tested: {selectedBeach.waterQuality.lastTested}
+                                        Last Tested: {selectedBeach.waterQuality?.lastTested || 'N/A'}
                                     </Text>
                                 </View>
 
                                 {/* Facilities Section */}
                                 <Text style={styles.facilitiesTitle}>Facilities:</Text>
                                 <View style={styles.facilitiesContainer}>
-                                    {selectedBeach.facilities.map((facility, index) => (
+                                    {selectedBeach.facilities?.map((facility, index) => (
                                         <View key={index} style={styles.facilityTag}>
                                             <Text style={styles.facilityText}>{facility}</Text>
                                         </View>
@@ -292,14 +201,36 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
     },
+    centered: {
+        justifyContent: 'center',
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#666',
+    },
+    errorText: {
+        fontSize: 16,
+        color: '#ef4444',
+        marginBottom: 16,
+    },
+    retryButton: {
+        backgroundColor: '#3b82f6',
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 8,
+    },
+    retryButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
     title: {
         fontWeight: 'bold',
         fontSize: 24,
         marginTop: 50,
         marginBottom: 12,
     },
-
-    // SEARCH BAR STYLES
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -325,14 +256,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: '#000',
     },
-
-    // MAP STYLES
     map: {
         width: '100%',
         flex: 1,
     },
-
-    // MODAL STYLES
     modalOverlay: {
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.5)',
@@ -361,8 +288,6 @@ const styles = StyleSheet.create({
         color: '#333',
         marginBottom: 16,
     },
-
-    // WATER QUALITY STYLES
     waterQualitySection: {
         backgroundColor: '#f9fafb',
         padding: 16,
@@ -390,8 +315,6 @@ const styles = StyleSheet.create({
         color: '#4b5563',
         marginBottom: 6,
     },
-
-    // FACILITIES STYLES
     facilitiesTitle: {
         fontSize: 18,
         fontWeight: '600',
@@ -425,8 +348,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
     },
-
-    // NAV STYLES
     bottomNav: {
         position: "absolute",
         bottom: 24,
@@ -465,4 +386,4 @@ const styles = StyleSheet.create({
         color: "#000",
         fontWeight: "600",
     },
-})
+});
