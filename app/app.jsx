@@ -140,13 +140,13 @@ const Home = () => {
                         </View>
                     </Link>
 
-                    <Link href="/historie" style={[styles.navText]}>
+                    <Link href="/history" style={[styles.navText]}>
                         <View style={styles.navButton}>
                             <Image
                                 source={require("../assets/icons/time.png")}
                                 style={styles.icon}
                             />
-                            <Text style={[styles.navText]}>Historie</Text>
+                            <Text style={[styles.navText]}>history</Text>
                         </View>
                     </Link>
                 </View>
@@ -231,13 +231,13 @@ const Home = () => {
                     </View>
                 </Link>
 
-                <Link href="/historie" style={[styles.navText]}>
+                <Link href="/history" style={[styles.navText]}>
                     <View style={styles.navButton}>
                         <Image
                             source={require("../assets/icons/time.png")}
                             style={styles.icon}
                         />
-                        <Text style={[styles.navText]}>Historie</Text>
+                        <Text style={[styles.navText]}>history</Text>
                     </View>
                 </Link>
             </View>

@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import { API_URL } from '../constants/api';
 
 
-const Historie = () => {
+const history = () => {
 
     const [searchText, setSearchText] = useState("");
     const [selectedWeek, setSelectedWeek] = useState({});
@@ -214,13 +214,13 @@ const Historie = () => {
                     </View>
                 </Link>
 
-                <Link href="/historie" style={styles.navLink}>
+                <Link href="/history" style={styles.navLink}>
                     <View style={styles.navButton}>
                         <Image
                             source={require("../assets/icons/time.png")}
                             style={styles.activeIcon}
                         />
-                        <Text style={[styles.navText, styles.activeNav]}>Historie</Text>
+                        <Text style={[styles.navText, styles.activeNav]}>history</Text>
                     </View>
                 </Link>
             </View>
@@ -228,7 +228,7 @@ const Historie = () => {
     )
 }
 
-export default Historie
+export default history
 
 const styles = StyleSheet.create({
     container: {
