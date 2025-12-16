@@ -171,7 +171,6 @@ const Contact = () => {
                         {selectedBeach && (
                             <>
                                 <Text style={styles.beachName}>{selectedBeach.name}</Text>
-                                <Text style={styles.beachRating}>⭐ {selectedBeach.rating}/5</Text>
                                 <Text style={styles.beachDescription}>{selectedBeach.description}</Text>
                                 
                                 {/* Water Quality Section */}
@@ -218,16 +217,6 @@ const Contact = () => {
                                     <Text style={styles.ButtonAddBeachText}>Add to homescreen</Text>
                                 </Pressable>
 
-
-                                {/* Facilities Section */}
-                                <Text style={styles.facilitiesTitle}>Facilities:</Text>
-                                <View style={styles.facilitiesContainer}>
-                                    {selectedBeach.facilities?.map((facility, index) => (
-                                        <View key={index} style={styles.facilityTag}>
-                                            <Text style={styles.facilityText}>{facility}</Text>
-                                        </View>
-                                    ))}
-                                </View>
 
                                 <Pressable
                                     style={styles.closeButton}
